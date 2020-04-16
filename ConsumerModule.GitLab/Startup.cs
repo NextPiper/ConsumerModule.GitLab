@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ConsumerModule.GitLab.RabbitListener;
+using ConsumerModule.GitLab.Registry;
+using Lamar;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -24,9 +27,12 @@ namespace ConsumerModule.GitLab
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureContainer(ServiceRegistry services)
         {
             services.AddControllers();
+            services.IncludeRegistry<WebRegistry>();
+
+            services.AddHostedService<RabbitService>();
             
             services.AddSwaggerGen(c =>
             {
