@@ -29,7 +29,7 @@ namespace ConsumerModule.GitLab
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureContainer(ServiceRegistry services)
         {
-            services.AddControllers();
+            services.AddControllersWithViews();
             services.IncludeRegistry<WebRegistry>();
 
             services.AddHostedService<RabbitService>();
@@ -58,6 +58,8 @@ namespace ConsumerModule.GitLab
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            
 
             app.UseRouting();
 

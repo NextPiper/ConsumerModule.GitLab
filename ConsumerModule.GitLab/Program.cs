@@ -27,8 +27,8 @@ namespace ConsumerModule.GitLab
             
             var rabbitMQConfigUrl = $"http://nextpipe-service.default.svc.cluster.local:5555/core/config/rabbitmq?loadBalancer=false";
             var mongoDBConfigUrl = $"http://nextpipe-service.default.svc.cluster.local:5555/core/config/mongoDB";
-            //var rabbitMQConfigUrl = $"https://localhost:5555/core/config/rabbitmq?loadBalancer=false";
-            //var mongoDBConfigUrl = $"https://localhost:5555/core/config/mongoDB";
+            //var rabbitMQConfigUrl = $"http://localhost:5555/core/config/rabbitmq?loadBalancer=false";
+            //var mongoDBConfigUrl = $"http://localhost:5555/core/config/mongoDB";
             
             // Fetch rabbitMQConfig
             /*try

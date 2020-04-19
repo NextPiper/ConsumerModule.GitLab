@@ -1,85 +1,109 @@
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ConsumerModule.GitLab.Data;
+using ConsumerModule.GitLab.Data.Models;
+using ConsumerModule.GitLab.RabbitListener.RabbitModels;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 
 namespace ConsumerModule.GitLab.RabbitListener
 {
     public class RabbitService : IHostedService, IDisposable
     {
+        private readonly IGitLabDataRepository _gitLabDataRepository;
+
+        private const string PROCESS_MODULE_EXCHANGE = "gitlab-process-exchange";
+        private const string CONSUMER_MODULE_QUEUE = "consumer-module.gitlab";
+        
         /// <summary>
         /// Receive rabbitMQ messages
         /// </summary>
-        public RabbitService()
+        public RabbitService(IGitLabDataRepository gitLabDataRepository)
         {
-            
+            _gitLabDataRepository = gitLabDataRepository;
         }
         
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            //throw new NotImplementedException();
+            StartRabbitListener();
         }
 
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
-            //throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-    }
-}
-
-/*
-
-
-class Program
-    {
-        private const string GITLAB_COMMIT_EXCHANGE = "gitlab-commitexchange";
-        private const string GITLAB_COMMIT_QUEUE = "ConsoleConsumer-987654321";
-        static async Task Main(string[] args)
+        private async Task StartRabbitListener()
         {
             try
             {
                 var connectionFactory = new ConnectionFactory()
                 {
-                    HostName = "localhost",
-                    UserName = "admin",
-                    Password = "admin",
-                    Port = 5672
+                    HostName = "localhost",//Program.rabbitConfig.Hostname,
+                    UserName = "admin",//Program.rabbitConfig.Username,
+                    Password = "admin",//Program.rabbitConfig.Password,
+                    Port = 5672//Program.rabbitConfig.Port
                 };
 
                 using (var connection = connectionFactory.CreateConnection())
                 {
                     using (var channel = connection.CreateModel())
                     {
-                        channel.ExchangeDeclare(GITLAB_COMMIT_EXCHANGE, ExchangeType.Fanout);
+                        channel.ExchangeDeclare(PROCESS_MODULE_EXCHANGE, ExchangeType.Fanout);
 
-                        var queueName = channel.QueueDeclare(GITLAB_COMMIT_QUEUE,true, autoDelete:false,exclusive:false);
+                        var queueName = channel.QueueDeclare(CONSUMER_MODULE_QUEUE, durable: true, autoDelete: false,
+                            exclusive: false);
                         channel.QueueBind(
                             queue: queueName,
-                            exchange: GITLAB_COMMIT_EXCHANGE,
-                            routingKey: "");
+                            exchange: PROCESS_MODULE_EXCHANGE,
+                            routingKey: string.Empty);
                         Console.WriteLine("GitLab.Consumer waiting for events");
 
                         var consumer = new EventingBasicConsumer(channel);
-                        consumer.Received += (model, ea) =>
+                        consumer.Received += async (model, ea) =>
                         {
-                            Console.WriteLine("Received event at -" + DateTime.Now.ToString());
-                            
-                            var body = ea.Body;
-                            var json = Encoding.UTF8.GetString(body);
-                            var result = JsonConvert.DeserializeObject<GitLabCommitV1>(json);
+                            Console.WriteLine($"Received event at - {DateTime.Now.ToString()}");
 
-                            var analyser = new Analyze();
+                            var body = ea.Body.ToArray();
+                            var json = Encoding.UTF8.GetString(body);
+                            var result = JsonConvert.DeserializeObject<GitLabCommitV1Processed>(json);
+
+                            Console.WriteLine($"Succesfully serialized rabbit message from rabbitQue: ${CONSUMER_MODULE_QUEUE}");
                             
-                            analyser.Analyse(result);
+                            // Store event in mongoDB
+
                             
+                            // Map analysed commited filees to GitLabFileDataScore
+                            var fileNames = new List<string>();
+                            var fileDetails = new List<GitLabFileDataScore>();
+                            foreach (var scoredFile in result.CommitedFiles)
+                            {
+                                fileNames.Add(scoredFile.file_name);
+                                fileDetails.Add(new GitLabFileDataScore
+                                {
+                                    AccumulatedCodeScore = scoredFile.AccumulatedCodeScore,
+                                    BaseScore = scoredFile.BaseScore,
+                                    DetailedScoreDict = scoredFile.DetailedScoreDict,
+                                    FileName = scoredFile.file_name,
+                                    Ref = scoredFile.@ref
+                                });
+                            }
+
+                            await _gitLabDataRepository.Insert(new GitLabData
+                            {
+                                Id = Guid.NewGuid(),
+                                Project_id = result.project_id,
+                                User_id = result.user_id,
+                                RepositoryName = result.repository.name,
+                                Ref = result.@ref,
+                                Average_Commit_Score = result.AverageCommitScore,
+                                Checkout_sha = result.checkout_sha,
+                                Files = fileNames,
+                                FileDataScores = fileDetails,
+                                Project_name = result.project.name
+                            });
                         };
-                        
-                        
+
                         channel.BasicConsume(
                             queue: queueName,
                             autoAck: true,
@@ -94,10 +118,19 @@ class Program
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex);
             }
             
-            Console.WriteLine("Consumer shutting down");
-            Console.ReadLine();
+            Console.WriteLine("GitLab.Consumer rabbit listener shutting down");
         }
-    }*/
+        
+
+        public async Task StopAsync(CancellationToken cancellationToken)
+        {
+        }
+
+        public void Dispose()
+        {
+        }
+    }
+}

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using OfficeOpenXml;
 using System.IO.Packaging;
+using System.Threading.Tasks;
+using ConsumerModule.GitLab.Data;
+using ConsumerModule.GitLab.Data.Models;
 using Microsoft.Extensions.FileProviders;
 
 namespace ConsumerModule.GitLab.XMLConverter
@@ -10,10 +13,18 @@ namespace ConsumerModule.GitLab.XMLConverter
     public interface IExcelManager
     {
         //FileResult GetExcelData();
+        Task PostExcelData();
     }
     
     public class ExcelManager : IExcelManager
     {
+        private readonly IGitLabDataRepository _gitLabDataRepository;
+
+        public ExcelManager(IGitLabDataRepository gitLabDataRepository)
+        {
+            _gitLabDataRepository = gitLabDataRepository;
+        }
+
         /*public FileResult GetExcelData() {
             string wwwrootPath = _hostingEnvironment.WebRootPath;
             string fileName = @"excel.xlsx";
@@ -66,5 +77,12 @@ namespace ConsumerModule.GitLab.XMLConverter
             var mimeType = "application/vnd.ms-excel";
             return File(readStream, mimeType, fileName);
         }*/
+        public async Task PostExcelData()
+        {
+            await _gitLabDataRepository.Insert(new GitLabData
+            {
+                Id = Guid.NewGuid()
+            });
+        }
     }
 }

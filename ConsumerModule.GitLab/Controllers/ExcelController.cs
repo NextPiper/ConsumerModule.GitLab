@@ -12,7 +12,7 @@ namespace ConsumerModule.GitLab.Controllers
 {
     [ApiController]
     [Route("data")]
-    public class ExcelController
+    public class ExcelController : Controller
     {
         private readonly IExcelManager _excelManager;
 
@@ -27,7 +27,7 @@ namespace ConsumerModule.GitLab.Controllers
         {
             // Generate the file
             var myBus = new List<string> {"id", "Busname", "Buscode"};
-// above code loads the data using LINQ with EF (query of table), you can substitute this with any data source.
+            // above code loads the data using LINQ with EF (query of table), you can substitute this with any data source.
             var stream = new MemoryStream();
 
             using (var package = new ExcelPackage(stream))
@@ -39,12 +39,21 @@ namespace ConsumerModule.GitLab.Controllers
             stream.Position = 0;
 
             string excelName = $"AwesomeExcelName.xlsx"; 
-// above I define the name of the file using the current datetime.
+            // above I define the name of the file using the current datetime.
 
             return new FileStreamResult(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
             {
                 FileDownloadName = excelName
             }; 
+        }
+
+        [HttpPost]
+        [Route("")]
+        public async Task<IActionResult> PostSomeData()
+        {
+            await _excelManager.PostExcelData();
+
+            return StatusCode(200);
         }
     }
 }
