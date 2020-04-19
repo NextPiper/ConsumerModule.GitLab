@@ -1,25 +1,18 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using ConsumerModule.GitLab.Data.Models;
 
-namespace ConsumerModule.GitLab.Data.Models
+namespace ConsumerModule.GitLab.Domain.Models
 {
-    public class GitLabData : IEntity
+    public class GitLabCommit
     {
         public Guid Id { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime EditedAt { get; set; } = DateTime.Now;
-        
-        public int Project_id { get; set; }
-        public string Project_name { get; set; }
         public int User_id { get; set; }
-        public string User_email { get; set; }
-        public string RepositoryName { get; set; }
+        public string user_email { get; set; }
         public string @Ref { get; set; }
         public string Checkout_sha { get; set; }
         public double Average_Commit_Score { get; set; }
         public IEnumerable<string> Files { get; set; } = new List<string>();
         public IEnumerable<GitLabFileDataScore> FileDataScores { get; set; } = new List<GitLabFileDataScore>();
-        
     }
 }

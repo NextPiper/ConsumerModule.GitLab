@@ -39,10 +39,10 @@ namespace ConsumerModule.GitLab.RabbitListener
             {
                 var connectionFactory = new ConnectionFactory()
                 {
-                    HostName = "localhost",//Program.rabbitConfig.Hostname,
-                    UserName = "admin",//Program.rabbitConfig.Username,
-                    Password = "admin",//Program.rabbitConfig.Password,
-                    Port = 5672//Program.rabbitConfig.Port
+                    HostName = Program.rabbitConfig.Hostname,
+                    UserName = Program.rabbitConfig.Username,
+                    Password = Program.rabbitConfig.Password,
+                    Port = Program.rabbitConfig.Port
                 };
 
                 using (var connection = connectionFactory.CreateConnection())

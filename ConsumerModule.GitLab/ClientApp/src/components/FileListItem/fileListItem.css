@@ -1,0 +1,37 @@
+.fileListItem {
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.fileListContainer {
+    border-radius: 10px;
+    box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    width: 100%;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pseperator {
+    height: 1px;
+    width: 75px;
+    background-color: grey;
+    margin-bottom: 20px;
+}
+
+.moreDetails {
+    color: grey;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.moreDetailsContainer {
+    margin-bottom: 20px;
+    margin-top: 10px;
+    width: 100%;
+}

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,9 +27,17 @@ namespace ConsumerModule.GitLab
 
         public IConfiguration Configuration { get; }
 
+        private const string AllowDevCors = "development";
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureContainer(ServiceRegistry services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: AllowDevCors,
+                    builder => { builder.WithOrigins("http://localhost:3000"); });
+            });
+            
+            
             services.AddControllersWithViews();
             services.IncludeRegistry<WebRegistry>();
 
@@ -38,6 +47,8 @@ namespace ConsumerModule.GitLab
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "ConsumerModul.GitLab - NextPipe Module - Beta API", Version = "v1"});
             });
+            
+            services.AddSpaStaticFiles(conf => { conf.RootPath = "ClientApp/build"; });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,7 +60,7 @@ namespace ConsumerModule.GitLab
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-                c.RoutePrefix = string.Empty;
+                c.RoutePrefix = "swagger";
             });
             
             if (env.IsDevelopment())
@@ -59,13 +70,26 @@ namespace ConsumerModule.GitLab
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseSpaStaticFiles();
             
-
             app.UseRouting();
 
             app.UseAuthorization();
 
+            app.UseCors(AllowDevCors);
+
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "ClientApp";
+                spa.Options.DefaultPage = "/app";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                }
+            });
         }
     }
 }

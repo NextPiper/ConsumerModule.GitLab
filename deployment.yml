@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: consumer-module-gitlab-container
-        image: "consumer:1.1"
+        image: "consumer:1.8"
         resources:
           limits:
             memory: "256Mi"

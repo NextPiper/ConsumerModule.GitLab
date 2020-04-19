@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using ConsumerModule.GitLab.Data;
+using ConsumerModule.GitLab.Domain;
 using ConsumerModule.GitLab.XMLConverter;
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
@@ -14,11 +15,12 @@ namespace ConsumerModule.GitLab.Controllers
     [Route("data")]
     public class ExcelController : Controller
     {
+        private readonly IGitLabHandler _gitLabHandler;
         private readonly IExcelManager _excelManager;
 
-        public ExcelController(IExcelManager excelManager)
+        public ExcelController(IGitLabHandler gitLabHandler)
         {
-            _excelManager = excelManager;
+            _gitLabHandler = gitLabHandler;
         }
         
         [HttpGet]

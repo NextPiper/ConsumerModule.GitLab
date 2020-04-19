@@ -1,3 +1,4 @@
+using ConsumerModule.GitLab.Domain;
 using ConsumerModule.GitLab.XMLConverter;
 using Lamar;
 using Microsoft.Extensions.Options;
@@ -11,6 +12,7 @@ namespace ConsumerModule.GitLab.Registry
         {
             For<IExcelManager>().Use<ExcelManager>();
             For<IMongoClient>().Use(ctx => new MongoClient(Program.mongoConfig.MongoClusterConnectionString)).Singleton();
+            For<IGitLabHandler>().Use<GitLabHandler>();
             
             Scan(scanner =>
             {

@@ -31,7 +31,7 @@ namespace ConsumerModule.GitLab
             //var mongoDBConfigUrl = $"http://localhost:5555/core/config/mongoDB";
             
             // Fetch rabbitMQConfig
-            /*try
+            try
             {
                 var result = await httpClient.GetAsync(rabbitMQConfigUrl);
 
@@ -65,7 +65,7 @@ namespace ConsumerModule.GitLab
             {
                 Console.WriteLine(ex);
                 throw ex;
-            }*/
+            }
             
             host.Run();
         }

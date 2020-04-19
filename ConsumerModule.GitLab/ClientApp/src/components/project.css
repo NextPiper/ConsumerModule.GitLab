@@ -1,0 +1,12 @@
+.projectHeader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 40px;
+    margin-top:30px;
+    font-size: 30px;
+}
+
+.commitList {
+    width: 100%
+}
