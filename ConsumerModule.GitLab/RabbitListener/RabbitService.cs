@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ConsumerModule.GitLab.Data;
 using ConsumerModule.GitLab.Data.Models;
+using ConsumerModule.GitLab.Domain;
 using ConsumerModule.GitLab.RabbitListener.RabbitModels;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
@@ -16,6 +17,7 @@ namespace ConsumerModule.GitLab.RabbitListener
     public class RabbitService : IHostedService, IDisposable
     {
         private readonly IGitLabDataRepository _gitLabDataRepository;
+        private readonly IGitLabProjectHandler _gitLabProjectHandler;
 
         private const string PROCESS_MODULE_EXCHANGE = "gitlab-process-exchange";
         private const string CONSUMER_MODULE_QUEUE = "consumer-module.gitlab";
@@ -23,9 +25,10 @@ namespace ConsumerModule.GitLab.RabbitListener
         /// <summary>
         /// Receive rabbitMQ messages
         /// </summary>
-        public RabbitService(IGitLabDataRepository gitLabDataRepository)
+        public RabbitService(IGitLabDataRepository gitLabDataRepository, IGitLabProjectHandler gitLabProjectHandler)
         {
             _gitLabDataRepository = gitLabDataRepository;
+            _gitLabProjectHandler = gitLabProjectHandler;
         }
         
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -71,7 +74,6 @@ namespace ConsumerModule.GitLab.RabbitListener
                             Console.WriteLine($"Succesfully serialized rabbit message from rabbitQue: ${CONSUMER_MODULE_QUEUE}");
                             
                             // Store event in mongoDB
-
                             
                             // Map analysed commited filees to GitLabFileDataScore
                             var fileNames = new List<string>();
@@ -88,6 +90,9 @@ namespace ConsumerModule.GitLab.RabbitListener
                                     Ref = scoredFile.@ref
                                 });
                             }
+
+                            await _gitLabProjectHandler.UpdateProject(result.project_id, result.project.name,
+                                result.checkout_sha, fileNames, fileDetails);
 
                             await _gitLabDataRepository.Insert(new GitLabData
                             {

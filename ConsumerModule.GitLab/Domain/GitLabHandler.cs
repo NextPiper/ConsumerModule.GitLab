@@ -17,10 +17,12 @@ namespace ConsumerModule.GitLab.Domain
     public class GitLabHandler : IGitLabHandler
     {
         private readonly IGitLabDataRepository _repository;
+        private readonly IGitLabProjectRepository _gitLabProjectRepository;
 
-        public GitLabHandler(IGitLabDataRepository repository)
+        public GitLabHandler(IGitLabDataRepository repository, IGitLabProjectRepository gitLabProjectRepository)
         {
             _repository = repository;
+            _gitLabProjectRepository = gitLabProjectRepository;
         }
         
         public async Task<IEnumerable<GitLabProjectOverview>> GetProjects(int page, int pageSize)
@@ -72,7 +74,6 @@ namespace ConsumerModule.GitLab.Domain
             var projectAverage = 0.0;
             var projectName = "";
             var repositoryName = "";
-            
 
             var projectCommits = new List<GitLabCommit>();  
                
@@ -88,7 +89,8 @@ namespace ConsumerModule.GitLab.Domain
                     Id = commit.Id,
                     Ref = commit.Ref,
                     User_id = commit.User_id,
-                    user_email = commit.User_email
+                    user_email = commit.User_email,
+                    CreatedAt = commit.CreatedAt
                 });
             }
 
@@ -98,6 +100,8 @@ namespace ConsumerModule.GitLab.Domain
                 projectName = commits.FirstOrDefault().Project_name;
                 repositoryName = commits.FirstOrDefault().RepositoryName;
             }
+
+            var project = await _gitLabProjectRepository.GetProjectByProjectId(projectId);
             
             return new GitLabProject
             {
@@ -105,7 +109,8 @@ namespace ConsumerModule.GitLab.Domain
                 Project_id = projectId,
                 Project_name = projectName,
                 RepositoryName = repositoryName,
-                Commits = projectCommits
+                Commits = projectCommits,
+                ProjectHistory = project.ProjectHistory
             };
         }
 

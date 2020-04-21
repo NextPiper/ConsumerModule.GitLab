@@ -13,6 +13,7 @@ namespace ConsumerModule.GitLab.Domain.Models
         public string Checkout_sha { get; set; }
         public double Average_Commit_Score { get; set; }
         public IEnumerable<string> Files { get; set; } = new List<string>();
+        public DateTime CreatedAt { get; set; }
         public IEnumerable<GitLabFileDataScore> FileDataScores { get; set; } = new List<GitLabFileDataScore>();
     }
 }

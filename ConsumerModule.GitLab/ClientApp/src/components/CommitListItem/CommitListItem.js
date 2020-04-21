@@ -3,12 +3,10 @@ import React from "react";
 import style from "./commitListItem.css";
 
 const CommitListItem = (props) => {
-  console.log(props.fileName);
-
   return (
     <div onClick={() => props.onClick(props.id)} className="commitListItem">
       <div>
-        <div>Filename: {props.fileName}</div>
+        <div>CommitSha: {props.sha.substring(0, 7)}</div>
         <div>UserId: {props.userId}</div>
       </div>
       <div>
@@ -23,17 +21,3 @@ const CommitListItem = (props) => {
 };
 
 export default CommitListItem;
-
-/*
-
-key={i}
-        fileName={item.fileName}
-        ref={item.ref}
-        baseScore={item.baseScore}
-        accumulatedCodeScore={item.accumulatedCodeScore}
-        detailedScoreDict={item.detailedScoreDict}
-
-
-
-
-*/
