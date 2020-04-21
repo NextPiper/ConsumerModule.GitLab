@@ -35,7 +35,7 @@ export class Projects extends Component {
 
   async fetchProjects() {
     console.log("fetch projects");
-    const response = await fetch("http://localhost:7070/projects");
+    const response = await fetch("projects");
     if (response) {
       console.log(response);
     }

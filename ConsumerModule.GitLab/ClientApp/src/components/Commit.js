@@ -21,7 +21,7 @@ class Commit extends React.Component {
   async fetchCommit() {
     console.log("fetch project withId: " + this.props.match.params.id);
     const response = await fetch(
-      `http://localhost:7070/projects/${this.props.match.params.id}/${this.props.match.params.commitId}`
+      `projects/${this.props.match.params.id}/${this.props.match.params.commitId}`
     );
     const data = await response.json();
     console.log(data);

@@ -17,9 +17,7 @@ class Project extends React.Component {
 
   async fetchProject() {
     console.log("fetch project withId: " + this.props.match.params.id);
-    const response = await fetch(
-      `http://localhost:7070/projects/${this.props.match.params.id}`
-    );
+    const response = await fetch(`projects/${this.props.match.params.id}`);
     const data = await response.json();
     console.log(data);
     this.setState({ project: data, isLoading: false });
