@@ -83,7 +83,6 @@ namespace ConsumerModule.GitLab
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
-                spa.Options.DefaultPage = "/app";
 
                 if (env.IsDevelopment())
                 {
