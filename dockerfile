@@ -9,7 +9,7 @@ RUN npm run build
 
 # Define .Net-builder stage
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-api
-
+ENV BuildingDocker true
 WORKDIR /app
 
 # copy csproj and restore respective projects

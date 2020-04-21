@@ -1,8 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
     </PropertyGroup>
+	
+
 
     <ItemGroup>
       <PackageReference Include="EPPlus" Version="5.1.0" />
@@ -15,11 +17,11 @@
       <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.3.1" />
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.3.1" />
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.3.1" />
-    </ItemGroup>
 
+    </ItemGroup>
     <ItemGroup>
       <Folder Include="RabbitListener\RabbitModels" />
     </ItemGroup>
 
-
+<Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish" Condition=" '$(BuildingDocker)' == ''" />
 </Project>
