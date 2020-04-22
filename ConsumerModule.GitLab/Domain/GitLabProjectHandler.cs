@@ -82,11 +82,15 @@ namespace ConsumerModule.GitLab.Domain
                     {
                         // Update content
                         var update = copyFileDataScore.SingleOrDefault(t => t.FileName == dataScore.FileName);
-                        update.Ref = dataScore.Ref;
-                        update.FileName = dataScore.FileName;
-                        update.BaseScore = dataScore.BaseScore;
-                        update.AccumulatedCodeScore = dataScore.AccumulatedCodeScore;
-                        update.DetailedScoreDict = dataScore.DetailedScoreDict;
+                        copyFileDataScore.Remove(update);
+                        copyFileDataScore.Add(new GitLabFileDataScore
+                        {
+                            Ref = dataScore.Ref,
+                            FileName = dataScore.FileName,
+                            BaseScore = dataScore.BaseScore,
+                            AccumulatedCodeScore = dataScore.AccumulatedCodeScore,
+                            DetailedScoreDict = dataScore.DetailedScoreDict
+                        });
                     }
                     else
                     {
