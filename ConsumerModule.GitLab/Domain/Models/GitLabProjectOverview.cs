@@ -5,5 +5,7 @@ namespace ConsumerModule.GitLab.Domain.Models
         public string Name { get; set; }
         public int ProjectId { get; set; }
         public double AverageProjectScore { get; set; }
+        
+        public double AccumulatedAverageProjectScore { get; set; }
     }
 }

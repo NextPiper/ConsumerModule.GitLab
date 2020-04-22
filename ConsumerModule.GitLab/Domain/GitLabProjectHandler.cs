@@ -22,7 +22,7 @@ namespace ConsumerModule.GitLab.Domain
 
         public async Task UpdateProject(int projectId, string projectName, string commitSha, IEnumerable<string> files, IEnumerable<GitLabFileDataScore> dataScores)
         {
-            // Check if project already exist witth projectId
+            // Check if project already exist with projectId
             var project = await _gitLabProjectRepository.GetProjectByProjectId(projectId);
 
             if (project == null)

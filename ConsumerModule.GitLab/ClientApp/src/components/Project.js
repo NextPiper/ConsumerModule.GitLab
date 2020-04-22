@@ -205,7 +205,9 @@ class Project extends React.Component {
             <div className="projectHeader">
               {this.state.project.project_name} -{" "}
               {Math.round(
-                (this.state.project.averageProjectScore + Number.EPSILON) * 100
+                (this.state.project.accumulatedAverageProjectScore +
+                  Number.EPSILON) *
+                  100
               ) / 100}{" "}
               avg score
             </div>

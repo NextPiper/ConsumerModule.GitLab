@@ -25,7 +25,7 @@ export class Projects extends Component {
           <ProjectListItem
             projectId={item.projectId}
             projectName={item.name}
-            projectScore={item.averageProjectScore}
+            projectScore={item.accumulatedAverageProjectScore}
             onClick={this.onProjectClicked}
           ></ProjectListItem>
         ));

@@ -14,11 +14,11 @@ spec:
     spec:
       containers:
       - name: consumer-module-gitlab-container
-        image: "ulriksandberg/consumer:2.8"
+        image: "ulriksandberg/consumer:3.0"
         resources:
           limits:
             memory: "256Mi"
-            cpu: "250m"
+            cpu: "150m"
         ports:
         - containerPort: 80
 ---
