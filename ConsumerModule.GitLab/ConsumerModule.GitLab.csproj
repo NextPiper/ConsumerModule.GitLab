@@ -12,7 +12,7 @@
       <PackageReference Include="Lamar.Microsoft.DependencyInjection" Version="4.1.5" />
       <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.1" />
       <PackageReference Include="MongoDB.Driver" Version="2.10.2" />
-      <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="RabbitMQ.Client" Version="6.0.0-rc.4" />
       <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.3.1" />
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.3.1" />
